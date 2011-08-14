@@ -9,7 +9,7 @@ import random
  
 class DynamicDie(collections.defaultdict):
  
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         collections.defaultdict.__init__(self, int)
  
     def add_side(self, side):
@@ -26,7 +26,8 @@ class DynamicDie(collections.defaultdict):
             if random_num <= total_pos:
                 return side
  
- 
+class Start(object): pass
+class End(object): pass
 class MarkovChain(collections.defaultdict):
     """ Yet another markov chain implementation.
         This one differs in the sense that it is able to better support
@@ -36,10 +37,12 @@ class MarkovChain(collections.defaultdict):
  
     # Sentinals 
     # Discussion here: http://stackoverflow.com/questions/1677726
-    class START(object):pass
-    class END(object):pass
+
+    START = Start
+    END = End
+
  
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         collections.defaultdict.__init__(self, DynamicDie)
  
     def add(self, iterable):
