@@ -42,31 +42,36 @@ class MarkovChain(collections.defaultdict):
     END = End
 
  
-    def __init__(self, *args, **kwargs):
+    def __init__(self, order=3, *args, **kwargs):
         collections.defaultdict.__init__(self, DynamicDie)
+        self.order = order
  
     def add(self, iterable):
         """ Insert an iterable (pattern) item into the markov chain.
             The order of the pattern will define more of the chain.
         """
-        item1 = item2 = MarkovChain.START
-        for item3 in iterable:
-            self[(item1, item2)].add_side(item3)
-            item1 = item2
-            item2 = item3
-        self[(item1, item2)].add_side(MarkovChain.END)
+        items = []
+        for i in range(self.order - 1):
+            items.append(MarkovChain.START)
+        for item in iterable:
+            self[tuple(items)].add_side(item)
+            items.insert(0, item)
+            items.pop()
+        self[tuple(items)].add_side(MarkovChain.END)
  
     def random_output(self, max=100):
         """ Generate a list of elements from the markov chain.
             The `max` value is in place in order to prevent excessive iteration.
         """
         output = []
-        item1 = item2 = MarkovChain.START
-        for i in range(max-2):
-            item3 = self[(item1, item2)].roll()
-            if item3 is MarkovChain.END:
+        items = []
+        for i in range(self.order - 1):
+            items.append(MarkovChain.START)
+        for i in range(max - (self.order - 1)):
+            item = self[tuple(items)].roll()
+            if item is MarkovChain.END:
                 break
-            output.append(item3)
-            item1 = item2
-            item2 = item3
+            output.append(item)
+            items.insert(0, item)
+            items.pop()
         return output
