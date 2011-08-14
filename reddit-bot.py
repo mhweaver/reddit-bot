@@ -36,12 +36,13 @@ def main():
     r = reddit.Reddit(user_agent="markov_comment_generator")
     my_markov = markovWrapper(path='.markov', order=3)
     
-    print "Size of markovWrapper:", len(my_markov.markov)
+    print "Markov size:", len(my_markov.markov)
         
-    comments = r.get_all_comments(limit=100, place_holder=None)
+    comments = r.get_all_comments(limit=300, place_holder=None)
     my_markov.add_comments(comments)
     
-    print my_markov.output()
+    print "Comment: ", my_markov.output()
     my_markov.save()
+    print "New markov size:", len(my_markov.markov)
 if __name__ == '__main__':
     main()
